@@ -1,0 +1,1 @@
+Hay un fallo crítico en la base de datos, es urgente revisarlo.

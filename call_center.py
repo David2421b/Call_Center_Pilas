@@ -1,4 +1,27 @@
 import threading
+import os
+import random
+
+
+def iniciar():
+    mensaje = seleccionar_mensaje()
+    print(mensaje)
+
+def seleccionar_mensaje() -> str:
+    carpeta = "mensajes"
+    lista_txt = []
+    for archivo in os.listdir(carpeta):
+        if archivo.endswith(".txt"):
+            lista_txt.append(archivo)
+    
+    if lista_txt:
+        archivo_aleatorio = random.choice(lista_txt)
+        ruta_completa = os.path.join(carpeta, archivo_aleatorio)
+        file = open(ruta_completa, "r", encoding = "utf-8")
+        contenido = file.read()
+        file.close()
+    return contenido
+
 
 class Agente:
     def __init__(self, id: int, nivel_experiencia: str, estado: str, tiempo_respuesta: int = 0):
@@ -40,6 +63,13 @@ class Queue:
     def dequeue(self):
         return self.queu.pop(0)
     
-
     def first(self):
         print(self.queu)
+    
+
+class clasificador():
+    pass
+    
+
+if __name__ == "__main__":
+    iniciar()
