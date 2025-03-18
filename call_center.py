@@ -1,31 +1,13 @@
 import threading
 import os
 import random
+import time
 
 
 def iniciar():
-    agentes = Llamado_Unico.crear_agentes()
-    unico = Llamado_Unico()
-    unico.agente_disponible(agentes)
-    unico_txt = Llamado_Unico()
-    mensaje = unico_txt.seleccionar_mensaje()
-    print(mensaje)
+    Llamado_repetido.atender()
+    pass
     
-
-class Agente:
-    def __init__(self, id: int, nivel_experiencia: str, estado: str = "Disponible", tiempo_respuesta: int = 0):
-        self.id: int = id
-        self. nivel_experiencia: str = nivel_experiencia
-        self.estado: str = estado
-        self.tiempo_respuesta: int = tiempo_respuesta
-
-    def calcular_tiempo(self, longitud_mensaje: int, peso_palabras_calves: int, factor_nivel: float):
-        self.tiempo_respuesta = ((longitud_mensaje / 10)+ (peso_palabras_calves / 2) * factor_nivel)
-    
-    def __repr__(self):
-        return f"Mi id es: {self.id} y soy {self.nivel_experiencia}"
-
-
 class Queue:
     def __init__(self):
         self.queu: list[int] = []
@@ -47,18 +29,28 @@ class Queue:
 
     def first(self):
         print(self.queu)
+
+class Agente:
+    def __init__(self, id: int, nivel_experiencia: str, estado: str = "Disponible", tiempo_respuesta: int = 0):
+        self.id: int = id
+        self. nivel_experiencia: str = nivel_experiencia
+        self.estado: str = estado
+        self.tiempo_respuesta: int = tiempo_respuesta
+
+    def calcular_tiempo(self, longitud_mensaje: int, peso_palabras_calves: int, factor_nivel: float):
+        self.tiempo_respuesta = ((longitud_mensaje / 10)+ (peso_palabras_calves / 2) * factor_nivel)
     
+    def __repr__(self):
+        return f"Mi id es: {self.id} y soy {self.nivel_experiencia}"
+  
 
 class Llamado_Unico:
-    def crear_agentes() -> list:
-        lista_agente = []
-        for _ in range(0, 4):
-            tipo_experiencias = ["Experto", "Intermedio", "Basico"]
-            id = random.randint(1000, 9999)
-            experiencia = random.randint(0, len(tipo_experiencias) - 1)
-            agente = Agente(id, tipo_experiencias[experiencia])
-            lista_agente.append(agente)
-        return lista_agente
+    def crear_agentes(self) -> Agente:
+        tipo_experiencias = ["Experto", "Intermedio", "Basico"]
+        id = random.randint(1000, 9999)
+        experiencia = random.randint(0, len(tipo_experiencias) - 1)
+        agente = Agente(id, tipo_experiencias[experiencia])
+        return agente
 
     def agente_disponible(self, agentes: list[object]):
         for i in range(len(agentes)):
@@ -98,14 +90,33 @@ class Llamado_Unico:
         else:
             return 1.0
         
-        
-class Llamado_repetido:
-    def atender(self, agente: Agente, mensaje: str):
+    def generar_atencion(self):
+        mensaje = self.seleccionar_mensaje()
+        agente = self.crear_agentes()
+
         peso_palabras_claves = Llamado_Unico.palabras_clave(mensaje)
         factor_nivel = Llamado_Unico.porcentaje_experiencia(agente)
-        agente.tiempo_respuesta = agente.calcular_tiempo(len(mensaje), peso_palabras_claves, factor_nivel)
+        agente.calcular_tiempo(len(mensaje), peso_palabras_claves, factor_nivel)
 
+        print(f"\nEL agente {agente.id} ({agente.nivel_experiencia}) se encargo del mensaje\n{mensaje}")
+        time.sleep(agente.tiempo_respuesta)    
+        
 
+class Llamado_repetido:
+    def atender():
+        for _ in range(0, 10):
+            atencion = Llamado_Unico()
+            hilo1 = threading.Thread(target = atencion.generar_atencion)
+            hilo2 = threading.Thread(target = atencion.generar_atencion)
+            hilo3 = threading.Thread(target = atencion.generar_atencion)
+
+            hilo1.start()
+            hilo2.start()
+            hilo3.start()
+
+            hilo1.join()
+            hilo2.join()
+            hilo3.join()
 
 
 if __name__ == "__main__":
