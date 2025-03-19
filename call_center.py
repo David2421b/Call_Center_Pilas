@@ -12,7 +12,7 @@ class Queue:
     def __init__(self):
         self.queu: list[int] = []
 
-    def enqueue(self, e, idx: int = 0):
+    def enqueue(self, e: str, idx: int = 0):
         if idx == len(self.queu):
             self.queu.append(e)
             return        
@@ -72,6 +72,12 @@ class Llamado_Unico:
             contenido = file.read()
             file.close()
         return contenido 
+    
+    def crear_cola_mensajes(mensaje: str) -> Queue:
+        queue = Queue()
+        if mensaje not in queue:
+            queue.enqueue(mensaje)
+
 
     def palabras_clave(mensaje) -> int:
         diccionario_clave = {"emergencia": 10, "urgente": 8, "fallo critico": 9, "problema": 5, "consulta": 2, "duda": 1}
@@ -100,7 +106,7 @@ class Llamado_Unico:
 
         print(f"\nEL agente {agente.id} ({agente.nivel_experiencia}) se encargo del mensaje\n{mensaje}")
         time.sleep(agente.tiempo_respuesta)    
-        # Cambios colocr un print para cuando el agente termine el proceso
+        print(f"\nEl agente {agente.id} termino el problema '{mensaje}' \n")
         
 
 class Llamado_repetido:
@@ -122,3 +128,6 @@ class Llamado_repetido:
 
 if __name__ == "__main__":
     iniciar()
+
+
+#Necitamos hacer que el mensaje sea un objeto que tenga como parametros el mensaje y el peso. Termianar la cola del mensaje y hacer la cola de agetes
