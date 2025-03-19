@@ -38,7 +38,7 @@ class Agente:
         self.tiempo_respuesta: int = tiempo_respuesta
 
     def calcular_tiempo(self, longitud_mensaje: int, peso_palabras_calves: int, factor_nivel: float):
-        self.tiempo_respuesta = ((longitud_mensaje / 10)+ (peso_palabras_calves / 2) * factor_nivel)
+        self.tiempo_respuesta = ((longitud_mensaje / 10) + (peso_palabras_calves / 2) * factor_nivel)
     
     def __repr__(self):
         return f"Mi id es: {self.id} y soy {self.nivel_experiencia}"
@@ -52,12 +52,11 @@ class Llamado_Unico:
         agente = Agente(id, tipo_experiencias[experiencia])
         return agente
 
-    def agente_disponible(self, agentes: list[object]):
-        for i in range(len(agentes)):
-            agente = agentes[i]
-            if agente.estado == "Disponible":
-                print(f"Estoy libre {agente.id}")
-                return agente
+    def agente_disponible(self, agente: Agente):
+        if agente.estado == "Disponible":
+            return True
+        else:
+            return False
     
     def seleccionar_mensaje(self) -> str:
         carpeta = "mensajes"
@@ -89,6 +88,7 @@ class Llamado_Unico:
             return 0.75
         else:
             return 1.0
+       # """ cambios Crear la cola en otro metodo"""
         
     def generar_atencion(self):
         mensaje = self.seleccionar_mensaje()
@@ -100,6 +100,7 @@ class Llamado_Unico:
 
         print(f"\nEL agente {agente.id} ({agente.nivel_experiencia}) se encargo del mensaje\n{mensaje}")
         time.sleep(agente.tiempo_respuesta)    
+        # Cambios colocr un print para cuando el agente termine el proceso
         
 
 class Llamado_repetido:
