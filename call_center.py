@@ -141,3 +141,4 @@ if __name__ == "__main__":
 #Necitamos hacer que el mensaje sea un objeto que tenga como parametros el mensaje y el peso. Termianar la cola del mensaje y hacer la cola de agetes
 #Crear la cola FIFO para los agentes
 #Convertir los mensajes para que entren en la cola
+#Cambiar logica para que el mensaje no sea un STR sino un Objeto de tipo Mensaje()
