@@ -99,7 +99,7 @@ class Llamado_Unico:
         agente.calcular_tiempo(len(mensaje), peso_palabras_claves, factor_nivel)
 
         print(f"\nEL agente {agente.id} ({agente.nivel_experiencia}) se encargo del mensaje\n{mensaje}")
-        time.sleep(agente.tiempo_respuesta)    
+        time.sleep(agente.tiempo_respuesta)
         # Cambios colocr un print para cuando el agente termine el proceso
         
 
