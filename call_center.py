@@ -42,6 +42,20 @@ class Agente:
     
     def __repr__(self):
         return f"Mi id es: {self.id} y soy {self.nivel_experiencia}"
+
+class Mensaje:
+    def __init__(self, mensaje: str, peso_prioridad: int = 0):
+        self.mensaje: str = mensaje
+        self.peso_prioridad: int = peso_prioridad
+    
+    def genera_peso_prioridad(self):
+        diccionario_clave = {"emergencia": 10, "urgente": 8, "fallo critico": 9, "problema": 5, "consulta": 2, "duda": 1}
+        for claves, valor in diccionario_clave.items():
+            if claves in self.mensaje:
+                self.peso_prioridad += valor
+    
+    def __str__(self):
+        return f"{self.mensaje}"
   
 
 class Llamado_Unico:
@@ -78,14 +92,6 @@ class Llamado_Unico:
         if mensaje not in queue:
             queue.enqueue(mensaje)
 
-
-    def palabras_clave(mensaje) -> int:
-        diccionario_clave = {"emergencia": 10, "urgente": 8, "fallo critico": 9, "problema": 5, "consulta": 2, "duda": 1}
-        puntos = 0
-        for claves, valor in diccionario_clave.items():
-            if claves in mensaje:
-                puntos += valor
-        return puntos
     
     def porcentaje_experiencia(agente: Agente) -> float:
         if agente.nivel_experiencia == "Experto":
@@ -126,8 +132,12 @@ class Llamado_repetido:
             hilo3.join()
 
 
+
+
 if __name__ == "__main__":
     iniciar()
 
 
 #Necitamos hacer que el mensaje sea un objeto que tenga como parametros el mensaje y el peso. Termianar la cola del mensaje y hacer la cola de agetes
+#Crear la cola FIFO para los agentes
+#Convertir los mensajes para que entren en la cola
