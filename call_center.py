@@ -6,29 +6,10 @@ import time
 
 def iniciar():
     Llamado_repetido.atender()
-    pass
-    
-class Queue:
-    def __init__(self):
-        self.queu: list[int] = []
 
-    def enqueue(self, e: str, idx: int = 0):
-        if idx == len(self.queu):
-            self.queu.append(e)
-            return        
-        if e > self.queu[idx]:
-            self.queu.insert(idx, e)
-            return
-        return self.enqueue(e, idx + 1)
 
-    def dequeue(self):
-        return self.queu.pop(0)
-    
-    def __len__(self):
-        return len(self.queu)
-
-    def first(self):
-        print(self.queu)
+class EmptyQueue(Exception):
+  ...
 
 class Agente:
     def __init__(self, id: int, nivel_experiencia: str, estado: str = "Disponible", tiempo_respuesta: int = 0):
@@ -54,9 +35,58 @@ class Mensaje:
             if claves in self.mensaje:
                 self.peso_prioridad += valor
     
-    def __str__(self):
-        return f"{self.mensaje}"
-  
+    def __repr__(self):
+        return str(f"{self.mensaje}")
+    
+class PriorityQueue:
+    def __init__(self):
+        self.queu: list = []
+
+    def enqueue(self, e: Mensaje, idx: int = 0):
+        if idx == len(self.queu):
+            self.queu.append(e)
+            return
+        posicion_queue: Mensaje = self.queu[idx]      
+        if e.peso_prioridad > posicion_queue.peso_prioridad:
+            self.queu.insert(idx, e)
+            return
+        return self.enqueue(e, idx + 1)
+
+    def dequeue(self):
+        return self.queu.pop(0)
+    
+    def __len__(self):
+        return len(self.queu)
+
+    def __repr__(self):
+        return str(self.queu)
+    
+
+
+class Queue:
+    
+    def __init__(self):
+        self.__queue: list = []
+
+    def enqueue(self, element):
+        self.__queue.append(element)
+
+    def dequeue(self) -> int:
+        if(len(self.__queue) == 0):
+            raise EmptyQueue("Cola Vacía...")
+        return self.__queue.pop(0)
+
+    def first(self) -> int:
+        if(len(self.__queue) == 0):
+            raise EmptyQueue("Cola Vacía...")
+        
+        return self.__queue[0]
+    
+    def __len__(self):
+        return len(self.__queue)
+
+    def __repr__(self):
+        return str(self.__queue)
 
 class Llamado_Unico:
     def crear_agentes(self) -> Agente:
@@ -66,11 +96,11 @@ class Llamado_Unico:
         agente = Agente(id, tipo_experiencias[experiencia])
         return agente
 
-    def agente_disponible(self, agente: Agente):
-        if agente.estado == "Disponible":
-            return True
-        else:
-            return False
+    # def agente_disponible(self, agente: Agente):
+    #     if agente.estado == "Disponible":
+    #         return True
+    #     else:
+    #         return False
     
     def seleccionar_mensaje(self) -> str:
         carpeta = "mensajes"
@@ -86,12 +116,20 @@ class Llamado_Unico:
             contenido = file.read()
             file.close()
         return contenido 
-    
-    def crear_cola_mensajes(mensaje: str) -> Queue:
-        queue = Queue()
-        if mensaje not in queue:
-            queue.enqueue(mensaje)
 
+# ----------------------------------------------------------------------------------------------------
+    def crear_cola_mensajes(self, queue: PriorityQueue = None) -> PriorityQueue:
+        solicitud_str = Mensaje(self.seleccionar_mensaje())
+        solicitud_str.genera_peso_prioridad()
+        auxiliar_queue = Queue()
+
+        if queue is None:
+            queue = PriorityQueue()
+
+        queue.enqueue(solicitud_str)            
+        return queue
+
+# ----------------------------------------------------------------------------------------------------
     
     def porcentaje_experiencia(agente: Agente) -> float:
         if agente.nivel_experiencia == "Experto":
@@ -103,16 +141,7 @@ class Llamado_Unico:
        # """ cambios Crear la cola en otro metodo"""
         
     def generar_atencion(self):
-        mensaje = self.seleccionar_mensaje()
-        agente = self.crear_agentes()
-
-        peso_palabras_claves = Llamado_Unico.palabras_clave(mensaje)
-        factor_nivel = Llamado_Unico.porcentaje_experiencia(agente)
-        agente.calcular_tiempo(len(mensaje), peso_palabras_claves, factor_nivel)
-
-        print(f"\nEL agente {agente.id} ({agente.nivel_experiencia}) se encargo del mensaje\n{mensaje}")
-        time.sleep(agente.tiempo_respuesta)    
-        print(f"\nEl agente {agente.id} termino el problema '{mensaje}' \n")
+        pass
         
 
 class Llamado_repetido:
@@ -132,13 +161,21 @@ class Llamado_repetido:
             hilo3.join()
 
 
-
-
 if __name__ == "__main__":
     iniciar()
+# queue = PriorityQueue()
+# queue.enqueue(Mensaje("HOLA", 2))
+# test = Llamado_Unico()
+# test.crear_cola_mensajes(queue)
+# test.crear_cola_mensajes(queue)
+# test.crear_cola_mensajes(queue)
+# test.crear_cola_mensajes(queue)
+# print(queue)
+
+
+
 
 
 #Necitamos hacer que el mensaje sea un objeto que tenga como parametros el mensaje y el peso. Termianar la cola del mensaje y hacer la cola de agetes
 #Crear la cola FIFO para los agentes
 #Convertir los mensajes para que entren en la cola
-#Cambiar logica para que el mensaje no sea un STR sino un Objeto de tipo Mensaje()

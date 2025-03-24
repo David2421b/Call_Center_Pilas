@@ -1,1 +1,1 @@
-Fallo crítico, la API dejó de responder repentinamente.
+Fallo crítico... la API dejó de responder repentinamente.

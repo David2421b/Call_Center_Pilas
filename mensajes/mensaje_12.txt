@@ -1,1 +1,1 @@
-Hay un problema con la autenticación, es urgente.
+Hay un problema con la autenticación... es urgente.

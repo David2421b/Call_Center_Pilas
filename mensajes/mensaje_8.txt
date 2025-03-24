@@ -1,1 +1,1 @@
-Fallo crítico, el servidor ha dejado de funcionar.
+Fallo crítico... el servidor ha dejado de funcionar.

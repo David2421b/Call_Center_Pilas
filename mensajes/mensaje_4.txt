@@ -1,1 +1,1 @@
-Se detectó un fallo crítico, la plataforma no responde.
+Se detectó un fallo crítico... la plataforma no responde.

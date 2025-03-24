@@ -1,1 +1,1 @@
-Emergencia, los datos no se están guardando correctamente.
+Emergencia... los datos no se están guardando correctamente.
