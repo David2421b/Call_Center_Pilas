@@ -5,7 +5,7 @@ import time
 
 
 def iniciar():
-    Llamado_repetido.atender()
+    Llamado_Unico.atender()
 
 
 class EmptyQueue(Exception):
@@ -88,19 +88,26 @@ class Queue:
     def __repr__(self):
         return str(self.__queue)
 
-class Llamado_Unico:
-    def crear_agentes(self) -> Agente:
+class Llamado_Repetdio:
+    def crear_agentes(self, queue: Queue) -> Queue:
         tipo_experiencias = ["Experto", "Intermedio", "Basico"]
         id = random.randint(1000, 9999)
         experiencia = random.randint(0, len(tipo_experiencias) - 1)
         agente = Agente(id, tipo_experiencias[experiencia])
-        return agente
 
-    # def agente_disponible(self, agente: Agente):
-    #     if agente.estado == "Disponible":
-    #         return True
-    #     else:
-    #         return False
+        if queue is None:
+            queue = Queue()
+        queue.enqueue(agente)
+        return queue
+    
+    def seleccionar_agente(self, queue: Queue):
+        caso_base = True
+        while caso_base == True:
+            item: Agente = queue.dequeue()
+            if item.estado == "Disponible":
+                caso_base = False
+                return item
+            queue.enqueue(item)
     
     def seleccionar_mensaje(self) -> str:
         carpeta = "mensajes"
@@ -117,11 +124,9 @@ class Llamado_Unico:
             file.close()
         return contenido 
 
-# ----------------------------------------------------------------------------------------------------
     def crear_cola_mensajes(self, queue: PriorityQueue = None) -> PriorityQueue:
         solicitud_str = Mensaje(self.seleccionar_mensaje())
         solicitud_str.genera_peso_prioridad()
-        auxiliar_queue = Queue()
 
         if queue is None:
             queue = PriorityQueue()
@@ -129,7 +134,6 @@ class Llamado_Unico:
         queue.enqueue(solicitud_str)            
         return queue
 
-# ----------------------------------------------------------------------------------------------------
     
     def porcentaje_experiencia(agente: Agente) -> float:
         if agente.nivel_experiencia == "Experto":
@@ -140,14 +144,19 @@ class Llamado_Unico:
             return 1.0
        # """ cambios Crear la cola en otro metodo"""
         
-    def generar_atencion(self):
-        pass
+    def generar_atencion(self, agente_queue: Queue):
+        queue = PriorityQueue()
         
 
-class Llamado_repetido:
+class Llamado_Unico:
     def atender():
+        queue = Queue()
+        llamado = Llamado_Repetdio()
+        for _ in range(0, 4):
+            llamado.crear_agentes(queue)
+
         for _ in range(0, 10):
-            atencion = Llamado_Unico()
+            atencion = Llamado_Repetdio()
             hilo1 = threading.Thread(target = atencion.generar_atencion)
             hilo2 = threading.Thread(target = atencion.generar_atencion)
             hilo3 = threading.Thread(target = atencion.generar_atencion)
@@ -163,14 +172,6 @@ class Llamado_repetido:
 
 if __name__ == "__main__":
     iniciar()
-# queue = PriorityQueue()
-# queue.enqueue(Mensaje("HOLA", 2))
-# test = Llamado_Unico()
-# test.crear_cola_mensajes(queue)
-# test.crear_cola_mensajes(queue)
-# test.crear_cola_mensajes(queue)
-# test.crear_cola_mensajes(queue)
-# print(queue)
 
 
 
