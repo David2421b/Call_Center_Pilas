@@ -14,7 +14,7 @@ class EmptyQueue(Exception):
 class Agente:
     def __init__(self, id: int, nivel_experiencia: str, estado: str = "Disponible", tiempo_respuesta: int = 0):
         self.id: int = id
-        self. nivel_experiencia: str = nivel_experiencia
+        self.nivel_experiencia: str = nivel_experiencia
         self.estado: str = estado
         self.tiempo_respuesta: int = tiempo_respuesta
 
@@ -40,28 +40,27 @@ class Mensaje:
     
 class PriorityQueue:
     def __init__(self):
-        self.queu: list = []
+        self.queue: list = []
 
     def enqueue(self, e: Mensaje, idx: int = 0):
-        if idx == len(self.queu):
-            self.queu.append(e)
+        if idx == len(self.queue):
+            self.queue.append(e)
             return
-        posicion_queue: Mensaje = self.queu[idx]      
+        posicion_queue: Mensaje = self.queue[idx]      
         if e.peso_prioridad > posicion_queue.peso_prioridad:
-            self.queu.insert(idx, e)
+            self.queue.insert(idx, e)
             return
         return self.enqueue(e, idx + 1)
 
     def dequeue(self):
-        return self.queu.pop(0)
+        return self.queue.pop(0)
     
     def __len__(self):
-        return len(self.queu)
+        return len(self.queue)
 
     def __repr__(self):
-        return str(self.queu)
+        return str(self.queue)
     
-
 
 class Queue:
     
@@ -88,7 +87,7 @@ class Queue:
     def __repr__(self):
         return str(self.__queue)
 
-class Llamado_Repetdio:
+class Llamado_Repetido:
     def crear_agentes(self, queue: Queue) -> Queue:
         tipo_experiencias = ["Experto", "Intermedio", "Basico"]
         id = random.randint(1000, 9999)
@@ -143,20 +142,29 @@ class Llamado_Repetdio:
         else:
             return 1.0
        # """ cambios Crear la cola en otro metodo"""
-        
-    def generar_atencion(self, agente_queue: Queue):
-        queue = PriorityQueue()
+
+    def aumentar_mensajes(self, queue: PriorityQueue):
+        self.crear_cola_mensajes(queue)
+        return queue
+
+    def generar_atencion(self, agente_queue: Queue, mensaje_queue: PriorityQueue):
+        if mensaje_queue is None:
+            mensaje_queue = PriorityQueue()
+        self.aumentar_mensajes(mensaje_queue)
+
         
 
 class Llamado_Unico:
     def atender():
+        """Crear el tiempo de los agentes"""
         queue = Queue()
-        llamado = Llamado_Repetdio()
+        mensaje_queue = PriorityQueue()
+        llamado = Llamado_Repetido()
         for _ in range(0, 4):
             llamado.crear_agentes(queue)
 
         for _ in range(0, 10):
-            atencion = Llamado_Repetdio()
+            atencion = Llamado_Repetido()
             hilo1 = threading.Thread(target = atencion.generar_atencion)
             hilo2 = threading.Thread(target = atencion.generar_atencion)
             hilo3 = threading.Thread(target = atencion.generar_atencion)
@@ -164,10 +172,11 @@ class Llamado_Unico:
             hilo1.start()
             hilo2.start()
             hilo3.start()
-
+            
             hilo1.join()
             hilo2.join()
             hilo3.join()
+            llamado.aumentar_mensajes(mensaje_queue)
 
 
 if __name__ == "__main__":
