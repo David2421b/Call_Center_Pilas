@@ -2,14 +2,18 @@ import threading
 import os
 import random
 import time
+import sys
+sys.setrecursionlimit(1000000)
 
+lock = threading.Lock()
 
 def iniciar():
     Llamado_Unico.atender()
 
 
 class EmptyQueue(Exception):
-  ...
+    def __init__(self):
+        super().__init__("Ya no hay mas mensajes Disponibles")
 
 class Agente:
     def __init__(self, id: int, nivel_experiencia: str, estado: str = "Disponible", tiempo_respuesta: int = 0):
@@ -38,6 +42,9 @@ class Mensaje:
     def __repr__(self):
         return str(f"{self.mensaje}")
     
+    def __len__(self):
+        return len(self.mensaje)
+    
 class PriorityQueue:
     def __init__(self):
         self.queue: list = []
@@ -53,6 +60,8 @@ class PriorityQueue:
         return self.enqueue(e, idx + 1)
 
     def dequeue(self):
+        if not self.queue:
+            raise EmptyQueue()
         return self.queue.pop(0)
     
     def __len__(self):
@@ -72,12 +81,12 @@ class Queue:
 
     def dequeue(self) -> int:
         if(len(self.__queue) == 0):
-            raise EmptyQueue("Cola Vacía...")
+            raise EmptyQueue()
         return self.__queue.pop(0)
 
     def first(self) -> int:
         if(len(self.__queue) == 0):
-            raise EmptyQueue("Cola Vacía...")
+            raise EmptyQueue()
         
         return self.__queue[0]
     
@@ -134,25 +143,48 @@ class Llamado_Repetido:
         return queue
 
     
-    def porcentaje_experiencia(agente: Agente) -> float:
+    def porcentaje_experiencia(self, agente: Agente) -> float:
         if agente.nivel_experiencia == "Experto":
             return 0.5
         elif agente.nivel_experiencia == "Intermedio":
             return 0.75
         else:
             return 1.0
-       # """ cambios Crear la cola en otro metodo"""
+       
 
     def aumentar_mensajes(self, queue: PriorityQueue):
         self.crear_cola_mensajes(queue)
         return queue
 
     def generar_atencion(self, agente_queue: Queue, mensaje_queue: PriorityQueue):
-        if mensaje_queue is None:
-            mensaje_queue = PriorityQueue()
-        self.aumentar_mensajes(mensaje_queue)
+        with lock:
+            if mensaje_queue is None:
+                mensaje_queue = PriorityQueue()
+                self.aumentar_mensajes(mensaje_queue)
 
-        
+            if len(mensaje_queue) == 0:
+                raise EmptyQueue()
+            
+            for _ in range(len(agente_queue)):
+                item_mensaje: Mensaje = mensaje_queue.dequeue()
+                item_mensaje.genera_peso_prioridad()
+                item_agente: Agente = agente_queue.dequeue()
+
+                if item_agente.estado == "Disponible":
+                    item_agente.calcular_tiempo(len(item_mensaje.mensaje), item_mensaje.peso_prioridad, self.porcentaje_experiencia(item_agente))
+                    time.sleep(1)
+                    return
+                    
+                else:
+                    mensaje_queue.enqueue(item_mensaje)
+    
+    def comprobador(queue: Mensaje):
+        if queue is None:
+            print("No hay mas mensajes disponibles")
+            return False
+        else: 
+            return True
+
 
 class Llamado_Unico:
     def atender():
@@ -162,21 +194,25 @@ class Llamado_Unico:
         llamado = Llamado_Repetido()
         for _ in range(0, 4):
             llamado.crear_agentes(queue)
+            llamado.aumentar_mensajes(mensaje_queue)
 
-        for _ in range(0, 10):
+        while Llamado_Repetido.comprobador(mensaje_queue):
             atencion = Llamado_Repetido()
-            hilo1 = threading.Thread(target = atencion.generar_atencion)
-            hilo2 = threading.Thread(target = atencion.generar_atencion)
-            hilo3 = threading.Thread(target = atencion.generar_atencion)
+            hilo1 = threading.Thread(target = atencion.generar_atencion, args = (queue, mensaje_queue))
+            hilo2 = threading.Thread(target = atencion.generar_atencion, args = (queue, mensaje_queue))
+            hilo3 = threading.Thread(target = atencion.generar_atencion, args = (queue, mensaje_queue))
 
             hilo1.start()
             hilo2.start()
             hilo3.start()
             
             hilo1.join()
+            
             hilo2.join()
+            
             hilo3.join()
             llamado.aumentar_mensajes(mensaje_queue)
+        print(mensaje_queue)
 
 
 if __name__ == "__main__":
