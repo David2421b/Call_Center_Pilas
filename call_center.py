@@ -2,8 +2,6 @@ import threading
 import os
 import random
 import time
-import sys
-sys.setrecursionlimit(1000000)
 
 lock = threading.Lock()
 
@@ -23,7 +21,7 @@ class Agente:
         self.tiempo_respuesta: int = tiempo_respuesta
 
     def calcular_tiempo(self, longitud_mensaje: int, peso_palabras_calves: int, factor_nivel: float):
-        self.tiempo_respuesta = ((longitud_mensaje / 10) + (peso_palabras_calves / 2) * factor_nivel)
+        self.tiempo_respuesta = ((longitud_mensaje / 10) + (peso_palabras_calves / 2)) * factor_nivel
     
     def __repr__(self):
         return f"Mi id es: {self.id} y soy {self.nivel_experiencia}"
@@ -34,6 +32,7 @@ class Mensaje:
         self.peso_prioridad: int = peso_prioridad
     
     def genera_peso_prioridad(self):
+        self.peso_prioridad = 0
         diccionario_clave = {"emergencia": 10, "urgente": 8, "fallo critico": 9, "problema": 5, "consulta": 2, "duda": 1}
         for claves, valor in diccionario_clave.items():
             if claves in self.mensaje:
@@ -150,7 +149,7 @@ class Llamado_Repetido:
             return 0.75
         else:
             return 1.0
-       
+       # """ cambios Crear la cola en otro metodo"""
 
     def aumentar_mensajes(self, queue: PriorityQueue):
         self.crear_cola_mensajes(queue)
@@ -158,13 +157,6 @@ class Llamado_Repetido:
 
     def generar_atencion(self, agente_queue: Queue, mensaje_queue: PriorityQueue):
         with lock:
-            if mensaje_queue is None:
-                mensaje_queue = PriorityQueue()
-                self.aumentar_mensajes(mensaje_queue)
-
-            if len(mensaje_queue) == 0:
-                raise EmptyQueue()
-            
             for _ in range(len(agente_queue)):
                 item_mensaje: Mensaje = mensaje_queue.dequeue()
                 item_mensaje.genera_peso_prioridad()
@@ -172,55 +164,42 @@ class Llamado_Repetido:
 
                 if item_agente.estado == "Disponible":
                     item_agente.calcular_tiempo(len(item_mensaje.mensaje), item_mensaje.peso_prioridad, self.porcentaje_experiencia(item_agente))
+                    item_agente.estado = "Ocupado"
+                    print(f"\n-  El problema ({item_mensaje.mensaje}) será resulto por el agente {item_agente.id} ({item_agente.nivel_experiencia})")
+                    time.sleep(item_agente.tiempo_respuesta)
+                    print(f"     El agente: {item_agente.id} ha resuelto el problema en {item_agente.tiempo_respuesta} segundos\n")
                     time.sleep(1)
-                    return
+                    item_agente.estado = "Disponible"                
+                    agente_queue.enqueue(item_agente)
                     
                 else:
-                    mensaje_queue.enqueue(item_mensaje)
+                    agente_queue.enqueue(item_agente)
     
-    def comprobador(queue: Mensaje):
-        if queue is None:
-            print("No hay mas mensajes disponibles")
-            return False
-        else: 
-            return True
-
-
 class Llamado_Unico:
     def atender():
-        """Crear el tiempo de los agentes"""
         queue = Queue()
         mensaje_queue = PriorityQueue()
         llamado = Llamado_Repetido()
-        for _ in range(0, 4):
+        for _ in range(4):
             llamado.crear_agentes(queue)
-            llamado.aumentar_mensajes(mensaje_queue)
-
-        while Llamado_Repetido.comprobador(mensaje_queue):
-            atencion = Llamado_Repetido()
-            hilo1 = threading.Thread(target = atencion.generar_atencion, args = (queue, mensaje_queue))
-            hilo2 = threading.Thread(target = atencion.generar_atencion, args = (queue, mensaje_queue))
-            hilo3 = threading.Thread(target = atencion.generar_atencion, args = (queue, mensaje_queue))
-
-            hilo1.start()
-            hilo2.start()
-            hilo3.start()
-            
-            hilo1.join()
-            
-            hilo2.join()
-            
-            hilo3.join()
-            llamado.aumentar_mensajes(mensaje_queue)
+        for _ in range(15):
+                llamado.aumentar_mensajes(mensaje_queue)
         print(mensaje_queue)
+        lista_hilos = []
 
+        for _ in range(3):
+            t = threading.Thread(target = llamado.generar_atencion, args = (queue, mensaje_queue))
+            lista_hilos.append(t)
+            t.start()
+        
+        for t in lista_hilos:
+            t.join()
+        
+        print("Se han terminado todos los llamados, hora de almorzar")
 
+                
 if __name__ == "__main__":
     iniciar()
-
-
-
-
 
 #Necitamos hacer que el mensaje sea un objeto que tenga como parametros el mensaje y el peso. Termianar la cola del mensaje y hacer la cola de agetes
 #Crear la cola FIFO para los agentes
