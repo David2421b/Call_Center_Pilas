@@ -8,7 +8,6 @@ lock = threading.Lock()
 def iniciar():
     Llamado_Unico.atender()
 
-
 class EmptyQueue(Exception):
     def __init__(self):
         super().__init__("Ya no hay mas mensajes Disponibles")
@@ -75,7 +74,7 @@ class Queue:
     def __init__(self):
         self.__queue: list = []
 
-    def enqueue(self, element):
+    def enqueue(self, element: Agente):
         self.__queue.append(element)
 
     def dequeue(self) -> int:
@@ -149,7 +148,6 @@ class Llamado_Repetido:
             return 0.75
         else:
             return 1.0
-       # """ cambios Crear la cola en otro metodo"""
 
     def aumentar_mensajes(self, queue: PriorityQueue):
         self.crear_cola_mensajes(queue)
@@ -177,18 +175,18 @@ class Llamado_Repetido:
     
 class Llamado_Unico:
     def atender():
-        queue = Queue()
+        agente_queue = Queue()
         mensaje_queue = PriorityQueue()
         llamado = Llamado_Repetido()
         for _ in range(4):
-            llamado.crear_agentes(queue)
+            llamado.crear_agentes(agente_queue)
         for _ in range(15):
                 llamado.aumentar_mensajes(mensaje_queue)
         print(mensaje_queue)
         lista_hilos = []
 
         for _ in range(3):
-            t = threading.Thread(target = llamado.generar_atencion, args = (queue, mensaje_queue))
+            t = threading.Thread(target = llamado.generar_atencion, args = (agente_queue, mensaje_queue))
             lista_hilos.append(t)
             t.start()
         
@@ -201,6 +199,9 @@ class Llamado_Unico:
 if __name__ == "__main__":
     iniciar()
 
-#Necitamos hacer que el mensaje sea un objeto que tenga como parametros el mensaje y el peso. Termianar la cola del mensaje y hacer la cola de agetes
-#Crear la cola FIFO para los agentes
-#Convertir los mensajes para que entren en la cola
+
+# hacer una clase que reparta la clase (crea el hilo, crea las instacias de las clases e inicia los hilos que llaman la clase)
+# hacer otra clase que haga la atencion
+# hacer una lista de responsabilidades
+# __post_init__() averguar que es
+# Thread Producer-Consummer Pattern in Python (SUperFasstPython)
