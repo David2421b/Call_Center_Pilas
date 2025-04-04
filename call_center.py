@@ -98,7 +98,7 @@ class Llamado_Repetido:
     def crear_agentes(self, queue: Queue) -> Queue:
         tipo_experiencias = ["Experto", "Intermedio", "Basico"]
         id = random.randint(1000, 9999)
-        experiencia = random.randint(0, len(tipo_experiencias) - 1)
+        experiencia = random.randint(len(tipo_experiencias))
         agente = Agente(id, tipo_experiencias[experiencia])
 
         if queue is None:
@@ -198,10 +198,3 @@ class Llamado_Unico:
                 
 if __name__ == "__main__":
     iniciar()
-
-
-# hacer una clase que reparta la clase (crea el hilo, crea las instacias de las clases e inicia los hilos que llaman la clase)
-# hacer otra clase que haga la atencion
-# hacer una lista de responsabilidades
-# __post_init__() averguar que es
-# Thread Producer-Consummer Pattern in Python (SUperFasstPython)
