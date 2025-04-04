@@ -175,8 +175,8 @@ class Llamado_Repetido:
                     return
     
     def agrupacion(self, menasje_queue: PriorityQueue):
-        contador = 0
         for _ in range(len(menasje_queue)): 
+            contador = 0
             auxiliar_1 = PriorityQueue()
             auxiliar_2 = PriorityQueue()
             diccionario_contador = {}
@@ -185,12 +185,12 @@ class Llamado_Repetido:
             auxiliar_1.enqueue(item_auxiliar_1)
 
             if item_auxiliar_1.mensaje not in diccionario_contador:
-                contador += 1
-                diccionario_contador[item_auxiliar_1.mensaje] = contador
+                contador_new += 1
+                diccionario_contador[item_auxiliar_1.mensaje] = contador_new
                 auxiliar_1.enqueue(item_auxiliar_1)
 
             elif item_auxiliar_1.mensaje in diccionario_contador:
-                contador += 1
+                contador = diccionario_contador[item_auxiliar_1.mensaje] + 1
                 diccionario_contador[item_auxiliar_1.mensaje] = contador
 
 
