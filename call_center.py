@@ -172,6 +172,15 @@ class Llamado_Repetido:
                 else:
                     agente_queue.enqueue(item_agente)
                     mensaje_queue.enqueue(item_mensaje)
+                    return
+    
+    def agrupacion(self, menasje_queue: PriorityQueue):
+        for _ in range(len(menasje_queue)): 
+            item_auxiliar_1 = menasje_queue.dequeue()
+            auxiliar_1 = PriorityQueue()
+            auxiliar_1.enqueue(item_auxiliar_1)
+
+
     
 class Llamado_Unico:
     def atender():
@@ -180,7 +189,7 @@ class Llamado_Unico:
         llamado = Llamado_Repetido()
         for _ in range(4):
             llamado.crear_agentes(agente_queue)
-        for _ in range(15):
+        for _ in range(7):
                 llamado.aumentar_mensajes(mensaje_queue)
         print(mensaje_queue)
 
