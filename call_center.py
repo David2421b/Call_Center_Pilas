@@ -171,6 +171,7 @@ class Llamado_Repetido:
                     
                 else:
                     agente_queue.enqueue(item_agente)
+                    mensaje_queue.enqueue(item_mensaje)
     
 class Llamado_Unico:
     def atender():
