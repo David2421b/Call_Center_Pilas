@@ -184,9 +184,13 @@ class Llamado_Repetido:
             item_auxiliar_1: Mensaje = menasje_queue.dequeue()
             auxiliar_1.enqueue(item_auxiliar_1)
 
-            if item_auxiliar_1 not in diccionario_contador:
+            if item_auxiliar_1.mensaje not in diccionario_contador:
                 contador += 1
                 diccionario_contador[item_auxiliar_1.mensaje] = contador
+                auxiliar_1.enqueue(item_auxiliar_1)
+
+            elif item_auxiliar_1.mensaje in diccionario_contador:
+                
 
 
 
