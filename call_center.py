@@ -111,6 +111,7 @@ class Llamado_Repetido:
         while caso_base == True:
             item: Agente = queue.dequeue()
             if item.estado == "Disponible":
+
                 caso_base = False
                 return item
             queue.enqueue(item)
@@ -198,10 +199,3 @@ class Llamado_Unico:
                 
 if __name__ == "__main__":
     iniciar()
-
-
-# hacer una clase que reparta la clase (crea el hilo, crea las instacias de las clases e inicia los hilos que llaman la clase)
-# hacer otra clase que haga la atencion
-# hacer una lista de responsabilidades
-# __post_init__() averguar que es
-# Thread Producer-Consummer Pattern in Python (SUperFasstPython)
