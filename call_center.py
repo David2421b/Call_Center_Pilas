@@ -173,25 +173,25 @@ class Llamado_Repetido:
                     agente_queue.enqueue(item_agente)
                     mensaje_queue.enqueue(item_mensaje)
                     return
-    
-    def agrupacion(self, menasje_queue: PriorityQueue):
-        for _ in range(len(menasje_queue)): 
+
+    def agrupacion(self, cola_mensaje: PriorityQueue):
+        diccionario_contador = {}
+        for _ in range(len(cola_mensaje)): 
             contador = 0
             auxiliar_1 = PriorityQueue()
             auxiliar_2 = PriorityQueue()
-            diccionario_contador = {}
 
-            item_auxiliar_1: Mensaje = menasje_queue.dequeue()
-            auxiliar_1.enqueue(item_auxiliar_1)
+            item_auxiliar_1: Mensaje = cola_mensaje.dequeue()
 
-            if item_auxiliar_1.mensaje not in diccionario_contador:
+            if item_auxiliar_1.peso_prioridad not in diccionario_contador:
+                contador_new = 0
                 contador_new += 1
-                diccionario_contador[item_auxiliar_1.mensaje] = contador_new
+                diccionario_contador[item_auxiliar_1.peso_prioridad] = contador_new 
                 auxiliar_1.enqueue(item_auxiliar_1)
 
-            elif item_auxiliar_1.mensaje in diccionario_contador:
-                contador = diccionario_contador[item_auxiliar_1.mensaje] + 1
-                diccionario_contador[item_auxiliar_1.mensaje] = contador
+            elif item_auxiliar_1.peso_prioridad in diccionario_contador:
+                contador = diccionario_contador[item_auxiliar_1.peso_prioridad] + 1
+                diccionario_contador[item_auxiliar_1.peso_prioridad] = contador
                 auxiliar_1.enqueue(item_auxiliar_1)
         print(diccionario_contador)
 
@@ -209,15 +209,17 @@ class Llamado_Unico:
         for _ in range(7):
                 llamado.aumentar_mensajes(mensaje_queue)
         print(mensaje_queue)
+        print()
+        llamado.agrupacion(mensaje_queue)
 
-        lista_hilos = []
-        for _ in range(3):
-            t = threading.Thread(target = llamado.generar_atencion, args = (agente_queue, mensaje_queue))
-            lista_hilos.append(t)
-            t.start()
+        # lista_hilos = []
+        # for _ in range(3):
+        #     t = threading.Thread(target = llamado.generar_atencion, args = (agente_queue, mensaje_queue))
+        #     lista_hilos.append(t)
+        #     t.start()
         
-        for t in lista_hilos:
-            t.join()
+        # for t in lista_hilos:
+        #     t.join()
         
         print("Se han terminado todos los llamados, hora de almorzar")
 
