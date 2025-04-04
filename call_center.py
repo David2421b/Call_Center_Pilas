@@ -186,11 +186,11 @@ class Llamado_Repetido:
     def agrupacion(self, cola_mensaje: PriorityQueue):
         self.diccionario_contador = {}
         mayor = 0
+        self.auxiliar_1 = PriorityQueue()
+        self.auxiliar_2 = PriorityQueue()
+        self.grupo = PriorityQueue()
+        self.contador = 0
         for _ in range(len(cola_mensaje)): 
-            self.contador = 0
-            self.auxiliar_1 = PriorityQueue()
-            self.auxiliar_2 = PriorityQueue()
-            self.grupo = PriorityQueue()
 
             self.item_1: Mensaje = cola_mensaje.dequeue()
 
@@ -221,14 +221,10 @@ class Llamado_Repetido:
                 cola_mensaje.enqueue(self.item_2)
                 self.grupo.enqueue(self.item_2)
             else: 
-                cola_mensaje.enqueue(self.item_2)
-                
-
-
-        
+                self.grupo.enqueue(self.item_2)     
 
         print(self.diccionario_contador)
-
+        print(cola_mensaje)
 
 
 
@@ -240,11 +236,11 @@ class Llamado_Unico:
         llamado = Llamado_Repetido()
         for _ in range(4):
             llamado.crear_agentes(agente_queue)
-        for _ in range(7):
+        for _ in range(4):
                 llamado.aumentar_mensajes(mensaje_queue)
         print(mensaje_queue)
         print()
-        # llamado.agrupacion(mensaje_queue)
+        llamado.agrupacion(mensaje_queue)
 
         lista_hilos = []
         for _ in range(3):
