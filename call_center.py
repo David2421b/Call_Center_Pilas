@@ -140,6 +140,9 @@ class Llamado_Repetido:
         queue.enqueue(solicitud_str)            
         return queue
 
+    def aumentar_mensajes(self, queue: PriorityQueue):
+        self.crear_cola_mensajes(queue)
+        return queue
     
     def porcentaje_experiencia(self, agente: Agente) -> float:
         if agente.nivel_experiencia == "Experto":
@@ -149,9 +152,6 @@ class Llamado_Repetido:
         else:
             return 1.0
 
-    def aumentar_mensajes(self, queue: PriorityQueue):
-        self.crear_cola_mensajes(queue)
-        return queue
 
     def generar_atencion(self, agente_queue: Queue, mensaje_queue: PriorityQueue):
         with lock:
@@ -193,6 +193,7 @@ class Llamado_Repetido:
                 contador = diccionario_contador[item_auxiliar_1.mensaje] + 1
                 diccionario_contador[item_auxiliar_1.mensaje] = contador
                 auxiliar_1.enqueue(item_auxiliar_1)
+        print(diccionario_contador)
 
 
 
