@@ -156,8 +156,17 @@ class Llamado_Repetido:
     def generar_atencion(self, agente_queue: Queue, mensaje_queue: PriorityQueue):
         with lock:
             for _ in range(len(agente_queue)):
-                item_mensaje: Mensaje = mensaje_queue.dequeue()
-                item_agente: Agente = agente_queue.dequeue()
+                try:
+                    item_mensaje: Mensaje = mensaje_queue.dequeue()
+                except EmptyQueue:
+                    print("No hay más mensajes disponibles.")
+                    return  # Sale de la función sin errores
+
+                try:
+                    item_agente: Agente = agente_queue.dequeue()
+                except EmptyQueue:
+                    print("No hay más agentes disponibles.")
+                    return  # Sale de la función sin errores
 
                 if item_agente.estado == "Disponible":
                     item_agente.calcular_tiempo(len(item_mensaje.mensaje), item_mensaje.peso_prioridad, self.porcentaje_experiencia(item_agente))
@@ -175,25 +184,39 @@ class Llamado_Repetido:
                     return
 
     def agrupacion(self, cola_mensaje: PriorityQueue):
-        diccionario_contador = {}
+        self.diccionario_contador = {}
+        mayor = 0
         for _ in range(len(cola_mensaje)): 
-            contador = 0
-            auxiliar_1 = PriorityQueue()
-            auxiliar_2 = PriorityQueue()
+            self.contador = 0
+            self.auxiliar_1 = PriorityQueue()
+            self.auxiliar_2 = PriorityQueue()
 
-            item_auxiliar_1: Mensaje = cola_mensaje.dequeue()
+            self.item_auxiliar_1: Mensaje = cola_mensaje.dequeue()
 
-            if item_auxiliar_1.peso_prioridad not in diccionario_contador:
-                contador_new = 0
-                contador_new += 1
-                diccionario_contador[item_auxiliar_1.peso_prioridad] = contador_new 
-                auxiliar_1.enqueue(item_auxiliar_1)
+            if self.item_auxiliar_1.peso_prioridad not in self.diccionario_contador:
+                self.contador_new = 0
+                self.contador_new += 1
+                self.diccionario_contador[self.item_auxiliar_1.peso_prioridad] = self.contador_new 
+                self.auxiliar_1.enqueue(self.item_auxiliar_1)
 
-            elif item_auxiliar_1.peso_prioridad in diccionario_contador:
-                contador = diccionario_contador[item_auxiliar_1.peso_prioridad] + 1
-                diccionario_contador[item_auxiliar_1.peso_prioridad] = contador
-                auxiliar_1.enqueue(item_auxiliar_1)
-        print(diccionario_contador)
+            elif self.item_auxiliar_1.peso_prioridad in self.diccionario_contador:
+                self.contador = self.diccionario_contador[self.item_auxiliar_1.peso_prioridad] + 1
+                self.diccionario_contador[self.item_auxiliar_1.peso_prioridad] = self.contador
+                self.auxiliar_1.enqueue(self.item_auxiliar_1)
+            
+        for claves, valores in self.diccionario_contador.items():
+            if valores > mayor:
+                mayor = valores
+            
+        for cl, va in self.diccionario_contador.items():
+            if va == mayor:
+                grupo_mayor = cl
+                break
+
+            
+        
+
+        print(self.diccionario_contador)
 
 
 
@@ -210,16 +233,16 @@ class Llamado_Unico:
                 llamado.aumentar_mensajes(mensaje_queue)
         print(mensaje_queue)
         print()
-        llamado.agrupacion(mensaje_queue)
+        # llamado.agrupacion(mensaje_queue)
 
-        # lista_hilos = []
-        # for _ in range(3):
-        #     t = threading.Thread(target = llamado.generar_atencion, args = (agente_queue, mensaje_queue))
-        #     lista_hilos.append(t)
-        #     t.start()
+        lista_hilos = []
+        for _ in range(3):
+            t = threading.Thread(target = llamado.generar_atencion, args = (agente_queue, mensaje_queue))
+            lista_hilos.append(t)
+            t.start()
         
-        # for t in lista_hilos:
-        #     t.join()
+        for t in lista_hilos:
+            t.join()
         
         print("Se han terminado todos los llamados, hora de almorzar")
 
