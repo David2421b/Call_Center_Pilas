@@ -157,7 +157,6 @@ class Llamado_Repetido:
         with lock:
             for _ in range(len(agente_queue)):
                 item_mensaje: Mensaje = mensaje_queue.dequeue()
-                item_mensaje.genera_peso_prioridad()
                 item_agente: Agente = agente_queue.dequeue()
 
                 if item_agente.estado == "Disponible":
