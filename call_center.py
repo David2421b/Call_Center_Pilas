@@ -183,8 +183,8 @@ class Llamado_Unico:
         for _ in range(15):
                 llamado.aumentar_mensajes(mensaje_queue)
         print(mensaje_queue)
-        lista_hilos = []
 
+        lista_hilos = []
         for _ in range(3):
             t = threading.Thread(target = llamado.generar_atencion, args = (agente_queue, mensaje_queue))
             lista_hilos.append(t)
