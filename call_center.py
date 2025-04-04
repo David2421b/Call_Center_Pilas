@@ -192,6 +192,7 @@ class Llamado_Repetido:
             elif item_auxiliar_1.mensaje in diccionario_contador:
                 contador = diccionario_contador[item_auxiliar_1.mensaje] + 1
                 diccionario_contador[item_auxiliar_1.mensaje] = contador
+                auxiliar_1.enqueue(item_auxiliar_1)
 
 
 
