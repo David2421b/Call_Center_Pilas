@@ -108,7 +108,7 @@ class Llamado_Repetido:
     
     def seleccionar_agente(self, queue: Queue):
         caso_base = True
-        while caso_base == True:
+        while caso_base is True:
             item: Agente = queue.dequeue()
             if item.estado == "Disponible":
                 caso_base = False
