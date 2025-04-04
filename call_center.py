@@ -213,7 +213,7 @@ class Llamado_Repetido:
                 grupo_mayor = cl
                 break
 
-            
+
         
 
         print(self.diccionario_contador)
