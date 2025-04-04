@@ -190,19 +190,20 @@ class Llamado_Repetido:
             self.contador = 0
             self.auxiliar_1 = PriorityQueue()
             self.auxiliar_2 = PriorityQueue()
+            self.grupo = PriorityQueue()
 
-            self.item_auxiliar_1: Mensaje = cola_mensaje.dequeue()
+            self.item_1: Mensaje = cola_mensaje.dequeue()
 
-            if self.item_auxiliar_1.peso_prioridad not in self.diccionario_contador:
+            if self.item_1.peso_prioridad not in self.diccionario_contador:
                 self.contador_new = 0
                 self.contador_new += 1
-                self.diccionario_contador[self.item_auxiliar_1.peso_prioridad] = self.contador_new 
-                self.auxiliar_1.enqueue(self.item_auxiliar_1)
+                self.diccionario_contador[self.item_1.peso_prioridad] = self.contador_new 
+                self.auxiliar_1.enqueue(self.item_1)
 
-            elif self.item_auxiliar_1.peso_prioridad in self.diccionario_contador:
-                self.contador = self.diccionario_contador[self.item_auxiliar_1.peso_prioridad] + 1
-                self.diccionario_contador[self.item_auxiliar_1.peso_prioridad] = self.contador
-                self.auxiliar_1.enqueue(self.item_auxiliar_1)
+            elif self.item_1.peso_prioridad in self.diccionario_contador:
+                self.contador = self.diccionario_contador[self.item_1.peso_prioridad] + 1
+                self.diccionario_contador[self.item_1.peso_prioridad] = self.contador
+                self.auxiliar_1.enqueue(self.item_1)
             
         for claves, valores in self.diccionario_contador.items():
             if valores > mayor:
@@ -212,6 +213,16 @@ class Llamado_Repetido:
             if va == mayor:
                 grupo_mayor = cl
                 break
+
+        for _ in range(len(self.auxiliar_1)):
+            self.item_2: Mensaje = self.auxiliar_1.dequeue()
+
+            if self.item_2.peso_prioridad == grupo_mayor:
+                cola_mensaje.enqueue(self.item_2)
+                self.grupo.enqueue(self.item_2)
+            else: 
+                cola_mensaje.enqueue(self.item_2)
+                
 
 
         
