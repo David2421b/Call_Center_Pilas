@@ -191,14 +191,12 @@ class Llamado_Repetido:
         grupo = PriorityQueue()
         
         for _ in range(len(cola_mensaje)): 
-
             item_1: Mensaje = cola_mensaje.dequeue()
 
             if item_1.peso_prioridad not in diccionario_contador:
                 contador_new = 1
                 diccionario_contador[item_1.peso_prioridad] = contador_new 
                 auxiliar_1.enqueue(item_1)
-
             else:
                 diccionario_contador[item_1.peso_prioridad] += 1
                 auxiliar_1.enqueue(item_1)
@@ -206,29 +204,29 @@ class Llamado_Repetido:
         for claves, valores in diccionario_contador.items():
             if valores > mayor:
                 mayor = valores
-                grupo_mayor = claves
+                grupo_mayor = (claves)
         print(f"el grupo mayor es = {grupo_mayor}")
                 
         for _ in range(len(auxiliar_1)):
-            self.item_2: Mensaje = auxiliar_1.dequeue()
+            item_2: Mensaje = auxiliar_1.dequeue()
 
-            if self.item_2.peso_prioridad == grupo_mayor:
-                cola_mensaje.enqueue(self.item_2)
-                grupo.enqueue(self.item_2)
-
-                if len(cola_mensaje) == 2:
-                    return cola_mensaje
-                else:
-                    base = len(cola_mensaje)
-                    for i in range(base):
-                        if i != 0 or i == len(cola_mensaje) - 1:
-                            item_3 = cola_mensaje.dequeue()
-                            grupo.enqueue(item_3)
+            if item_2.peso_prioridad == grupo_mayor:
+                cola_mensaje.enqueue(item_2)
 
             else: 
-                grupo.enqueue(self.item_2)     
+                grupo.enqueue(item_2)
+        print(f"\nel diccionario 1 es = {diccionario_contador}\n")
+        print(f"\nel grupo 1 es = {cola_mensaje}\n")
+        base = len(cola_mensaje)
+        for i in range(len(cola_mensaje)):
+            mensaje_temporal = cola_mensaje.dequeue()
+            if i == 0 or i == base - 1:
+                cola_mensaje.enqueue(mensaje_temporal)
+            else:
+                grupo.enqueue(mensaje_temporal)
 
-        print(diccionario_contador)
+        print(f"\nel diccionario 1 es = {diccionario_contador}\n")
+        print(f"\nel grupo 1 es = {cola_mensaje}\n")
 
     
 class Llamado_Unico:
@@ -245,13 +243,13 @@ class Llamado_Unico:
         llamado.agrupacion(mensaje_queue)
 
         lista_hilos = []
-        for _ in range(3):
-            t = threading.Thread(target = llamado.generar_atencion, args = (agente_queue, mensaje_queue))
-            lista_hilos.append(t)
-            t.start()
+        # for _ in range(3):
+        #     t = threading.Thread(target = llamado.generar_atencion, args = (agente_queue, mensaje_queue))
+        #     lista_hilos.append(t)
+        #     t.start()
         
-        for t in lista_hilos:
-            t.join()
+        # for t in lista_hilos:
+        #     t.join()
         
         print("Se han terminado todos los llamados, hora de almorzar")
 
