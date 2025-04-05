@@ -32,7 +32,7 @@ class Mensaje:
     
     def genera_peso_prioridad(self):
         self.peso_prioridad = 0
-        diccionario_clave = {"emergencia": 10, "urgente": 8, "fallo critico": 9, "problema": 5, "consulta": 2, "duda": 1}
+        diccionario_clave = {"emergencia": 10, "urgente": 8, "fallo crítico": 9, "problema": 5, "consulta": 2, "duda": 1}
         for claves, valor in diccionario_clave.items():
             if claves in self.mensaje:
                 self.peso_prioridad += valor
@@ -184,49 +184,52 @@ class Llamado_Repetido:
                     return
 
     def agrupacion(self, cola_mensaje: PriorityQueue):
-        self.diccionario_contador = {}
+        diccionario_contador = {}
         mayor = 0
-        self.auxiliar_1 = PriorityQueue()
-        self.auxiliar_2 = PriorityQueue()
-        self.grupo = PriorityQueue()
-        self.contador = 0
+        auxiliar_1 = PriorityQueue()
+        auxiliar_2 = PriorityQueue()
+        grupo = PriorityQueue()
+        
         for _ in range(len(cola_mensaje)): 
 
-            self.item_1: Mensaje = cola_mensaje.dequeue()
+            item_1: Mensaje = cola_mensaje.dequeue()
 
-            if self.item_1.peso_prioridad not in self.diccionario_contador:
-                self.contador_new = 0
-                self.contador_new += 1
-                self.diccionario_contador[self.item_1.peso_prioridad] = self.contador_new 
-                self.auxiliar_1.enqueue(self.item_1)
+            if item_1.peso_prioridad not in diccionario_contador:
+                contador_new = 1
+                diccionario_contador[item_1.peso_prioridad] = contador_new 
+                auxiliar_1.enqueue(item_1)
 
-            elif self.item_1.peso_prioridad in self.diccionario_contador:
-                self.contador = self.diccionario_contador[self.item_1.peso_prioridad] + 1
-                self.diccionario_contador[self.item_1.peso_prioridad] = self.contador
-                self.auxiliar_1.enqueue(self.item_1)
+            else:
+                diccionario_contador[item_1.peso_prioridad] += 1
+                auxiliar_1.enqueue(item_1)
             
-        for claves, valores in self.diccionario_contador.items():
+        for claves, valores in diccionario_contador.items():
             if valores > mayor:
                 mayor = valores
-            
-        for cl, va in self.diccionario_contador.items():
-            if va == mayor:
-                grupo_mayor = cl
+                grupo_mayor = claves
+                print(f"el grupo mayor es = {grupo_mayor}")
                 break
 
-        for _ in range(len(self.auxiliar_1)):
-            self.item_2: Mensaje = self.auxiliar_1.dequeue()
+        for _ in range(len(auxiliar_1)):
+            self.item_2: Mensaje = auxiliar_1.dequeue()
 
             if self.item_2.peso_prioridad == grupo_mayor:
                 cola_mensaje.enqueue(self.item_2)
-                self.grupo.enqueue(self.item_2)
+                grupo.enqueue(self.item_2)
+
+                if len(cola_mensaje) == 2:
+                    return cola_mensaje
+                else:
+                    base = len(cola_mensaje)
+                    for i in range(base):
+                        if i != 0 or i == len(cola_mensaje) - 1:
+                            item_3 = cola_mensaje.dequeue()
+                            grupo.enqueue(item_3)
+
             else: 
-                self.grupo.enqueue(self.item_2)     
+                grupo.enqueue(self.item_2)     
 
-        print(self.diccionario_contador)
-        print(cola_mensaje)
-
-
+        print(diccionario_contador)
 
     
 class Llamado_Unico:
@@ -236,7 +239,7 @@ class Llamado_Unico:
         llamado = Llamado_Repetido()
         for _ in range(4):
             llamado.crear_agentes(agente_queue)
-        for _ in range(4):
+        for _ in range(7):
                 llamado.aumentar_mensajes(mensaje_queue)
         print(mensaje_queue)
         print()
