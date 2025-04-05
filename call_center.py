@@ -187,8 +187,7 @@ class Llamado_Repetido:
         diccionario_contador = {}
         mayor = 0
         auxiliar_1 = PriorityQueue()
-        auxiliar_2 = PriorityQueue()
-        grupo = PriorityQueue()
+        new_grupo = PriorityQueue()
         
         for _ in range(len(cola_mensaje)): 
             item_1: Mensaje = cola_mensaje.dequeue()
@@ -214,7 +213,7 @@ class Llamado_Repetido:
                 cola_mensaje.enqueue(item_2)
 
             else: 
-                grupo.enqueue(item_2)
+                new_grupo.enqueue(item_2)
         # print(f"\nel diccionario 1 es = {diccionario_contador}\n")
         # print(f"\nel grupo 1 es = {cola_mensaje}\n")
         base = len(cola_mensaje)
@@ -223,11 +222,11 @@ class Llamado_Repetido:
             if i == 0 or i == base - 1:
                 cola_mensaje.enqueue(mensaje_temporal)
             else:
-                grupo.enqueue(mensaje_temporal)
+                new_grupo.enqueue(mensaje_temporal)
 
         # print(f"\nel diccionario 1 es = {diccionario_contador}\n")
         # print(f"\nel grupo 1 es = {cola_mensaje}\n")
-        return grupo
+        return new_grupo
 
     
 class Llamado_Unico:
