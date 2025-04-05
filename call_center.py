@@ -207,9 +207,8 @@ class Llamado_Repetido:
             if valores > mayor:
                 mayor = valores
                 grupo_mayor = claves
-                print(f"el grupo mayor es = {grupo_mayor}")
-                break
-
+        print(f"el grupo mayor es = {grupo_mayor}")
+                
         for _ in range(len(auxiliar_1)):
             self.item_2: Mensaje = auxiliar_1.dequeue()
 
