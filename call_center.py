@@ -205,7 +205,7 @@ class Llamado_Repetido:
             if valores > mayor:
                 mayor = valores
                 grupo_mayor = (claves)
-        print(f"el grupo mayor es = {grupo_mayor}")
+        # print(f"el grupo mayor es = {grupo_mayor}")
                 
         for _ in range(len(auxiliar_1)):
             item_2: Mensaje = auxiliar_1.dequeue()
@@ -215,8 +215,8 @@ class Llamado_Repetido:
 
             else: 
                 grupo.enqueue(item_2)
-        print(f"\nel diccionario 1 es = {diccionario_contador}\n")
-        print(f"\nel grupo 1 es = {cola_mensaje}\n")
+        # print(f"\nel diccionario 1 es = {diccionario_contador}\n")
+        # print(f"\nel grupo 1 es = {cola_mensaje}\n")
         base = len(cola_mensaje)
         for i in range(len(cola_mensaje)):
             mensaje_temporal = cola_mensaje.dequeue()
@@ -225,8 +225,9 @@ class Llamado_Repetido:
             else:
                 grupo.enqueue(mensaje_temporal)
 
-        print(f"\nel diccionario 1 es = {diccionario_contador}\n")
-        print(f"\nel grupo 1 es = {cola_mensaje}\n")
+        # print(f"\nel diccionario 1 es = {diccionario_contador}\n")
+        # print(f"\nel grupo 1 es = {cola_mensaje}\n")
+        return grupo
 
     
 class Llamado_Unico:
@@ -238,18 +239,19 @@ class Llamado_Unico:
             llamado.crear_agentes(agente_queue)
         for _ in range(7):
                 llamado.aumentar_mensajes(mensaje_queue)
-        print(mensaje_queue)
+        print(f"\n{mensaje_queue}\n")
         print()
-        llamado.agrupacion(mensaje_queue)
+        nuevo_grupo = llamado.agrupacion(mensaje_queue)
+        print(f"Los mensajes a atender seran = {mensaje_queue}")
 
         lista_hilos = []
-        # for _ in range(3):
-        #     t = threading.Thread(target = llamado.generar_atencion, args = (agente_queue, mensaje_queue))
-        #     lista_hilos.append(t)
-        #     t.start()
+        for _ in range(3):
+            t = threading.Thread(target = llamado.generar_atencion, args = (agente_queue, mensaje_queue))
+            lista_hilos.append(t)
+            t.start()
         
-        # for t in lista_hilos:
-        #     t.join()
+        for t in lista_hilos:
+            t.join()
         
         print("Se han terminado todos los llamados, hora de almorzar")
 
